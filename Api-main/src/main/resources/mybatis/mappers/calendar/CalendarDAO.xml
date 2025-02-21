@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetshare.dao.CalendarDAO">
+
+  <resultMap id="calendarDTO" type="com.meetshare.dto.calendar.CalendarDTO">
+    <id property="no" column="NO" />
+    <result property="title" column="TITLE" />
+    <result property="content" column="CONTENT" />
+    <result property="writer" column="WRITER" />
+    <result property="passwd" column="PASSWD" />
+    <result property="fileId" column="FILE_ID" />
+    <result property="regidate" column="REGIDATE" />
+    <result property="modidate" column="MODIDATE" />
+    <result property="ordr" column="ORDR" />
+    <result property="isUse" column="IS_USE" />
+  </resultMap>
+
+  <!-- 새 캘린더 insert -->
+  <insert id="insertCalendar" parameterType="com.meetshare.dto.calendar.CalendarDTO" useGeneratedKeys="true" keyProperty="no">
+		INSERT INTO TB_CALENDAR (TITLE, WRITER, PASSWD, FILE_ID, ORDR, REGIDATE)
+		VALUES (#{title}, #{writer}, #{passwd}, #{fileId}, 0, NOW())
+  </insert>
+
+  <!-- 캘린더 입장 -> 정보 확인 -->
+  <select id="checkInfo" resultMap="calendarDTO" parameterType="String">
+    SELECT a.*
+    FROM TB_CALENDAR a
+    JOIN TB_CALMBER b ON a.NO = b.CAL_NO
+    WHERE b.EMAIL = #{email}
+    AND IS_USE = 'Y'
+    ORDER BY ORDR, REGIDATE DESC
+  </select>
+
+  <!-- 모든 캘린더 정보 select -> List -->
+  <select id="getCalendarList" resultMap="calendarDTO" parameterType="String">
+    SELECT a.*
+    FROM TB_CALENDAR a
+    JOIN TB_CALMBER b ON a.NO = b.CAL_NO
+    WHERE b.EMAIL = #{email}
+    AND IS_USE = 'Y'
+    ORDER BY ORDR, REGIDATE DESC
+  </select>
+
+  <!-- 특정 캘린더 정보 select -->
+  <select id="getCalendarByNo" resultMap="calendarDTO">
+		SELECT NO, TITLE, CONTENT, WRITER, PASSWD, FILE_ID, REGIDATE, MODIDATE, ORDR, IS_USE
+		FROM TB_CALENDAR
+		WHERE NO = #{no} AND IS_USE = 'Y'
+  </select>
+
+  <!-- 캘린더 정보 modify -->
+  <update id="updateCalendar" parameterType="com.meetshare.dto.calendar.CalendarDTO">
+		UPDATE TB_CALENDAR
+		SET TITLE = #{title}, PASSWD = #{passwd}, FILE_ID = #{fileId}, MODIDATE = NOW()
+		WHERE NO = #{no}
+  </update>
+
+  <!-- 캘린더 정보 delete -->
+  <update id="deleteCalendar" parameterType="int">
+		UPDATE TB_CALENDAR
+		SET IS_USE = 'N'
+		WHERE NO = #{no}
+  </update>
+
+  <!-- 상단 고정 캘린더 중 최대 ORDR 값 구하기 -->
+  <select id="getMaxOrder" resultType="int">
+		SELECT MAX(ORDR) FROM TB_CALENDAR WHERE IS_USE = 'Y'
+  </select>
+  
+  <!-- ORDR update -->
+  <update id="updateOrder" parameterType="int">
+		UPDATE TB_CALENDAR
+		SET ORDR = #{ordr}
+		WHERE NO = #{no} AND IS_USE = 'Y'
+  </update>
+  
+  <!-- 캘린더 -> 파일순번(고유순번) 가져오기 -->
+  <select id="getFileIdByCalendarNo" resultType="int">
+		SELECT FILE_ID FROM TB_CALENDAR WHERE NO = #{no}
+  </select>
+</mapper>

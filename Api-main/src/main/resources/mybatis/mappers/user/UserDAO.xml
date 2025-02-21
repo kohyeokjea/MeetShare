@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetshare.dao.UserDAO">
+
+	<resultMap id="userDTO" type="com.meetshare.dto.user.UserDTO">
+		<id property="no" column="NO" /> <!-- PK -->
+		<result property="name" column="NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="phone" column="PHONE" />
+		<result property="year" column="YEAR" />
+		<result property="date" column="DATE" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="regidate" column="REGIDATE" />
+	</resultMap>
+
+  <resultMap id="calMberDTO" type="com.meetshare.dto.calendar.CalMberDTO">
+    <id property="no" column="NO" />
+    <result property="calNo" column="CAL_NO" />
+    <result property="nickName" column="NICKNAME" />
+    <result property="email" column="EMAIL" />
+    <result property="auth" column="AUTH" />
+    <result property="isOut" column="IS_OUT" />
+    <result property="outDate" column="OUTDATE" />
+  </resultMap>
+
+  <!-- 전체 사용자 정보 -->
+	<select id="selectUserInfo" resultMap="userDTO">
+		SELECT * FROM TB_USER
+	</select>
+
+  <!-- 이메일로 사용자 정보 select -->
+  <select id="selectUserInfoByEmail" resultMap="userDTO" parameterType="String">
+		SELECT * FROM TB_USER WHERE EMAIL = #{email}
+	</select>
+
+  <!-- 사용자 정보 insert -->
+	<insert id="insertUserInfo" parameterType="com.meetshare.dto.user.UserDTO">
+		INSERT INTO TB_USER (NAME, EMAIL, PHONE, YEAR, DATE, FILE_ID, REGIDATE)
+		VALUES (#{name}, #{email}, #{phone}, #{year}, #{date}, #{fileId}, NOW())
+	</insert>
+
+  <!-- 사용자 정보 update -->
+	<update id="updateUserInfo" parameterType="com.meetshare.dto.user.UserDTO">
+		UPDATE TB_USER
+		SET NAME = #{name},
+		EMAIL = #{email},
+		PHONE = #{phone},
+		YEAR = #{year},
+		DATE = #{date},
+		FILE_ID = #{fileId}
+		WHERE NO = #{no}
+	</update>
+  
+  <!-- 사용자 delete -->
+	<delete id="deleteUser">
+		DELETE FROM TB_USER WHERE NO = #{no}
+	</delete>
+
+  <!-- 이메일로 사용자 정보 delete -->
+  <delete id="deleteUserByEmail">
+		DELETE FROM TB_USER WHERE EMAIL = #{email}
+	</delete>
+
+</mapper>

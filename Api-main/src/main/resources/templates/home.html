@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로그인 페이지</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      .login-container {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .login-container h1 {
+        margin-bottom: 20px;
+      }
+      .login-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        color: white;
+        cursor: pointer;
+      }
+      .naver-login {
+        background-color: #03c75a;
+      }
+      .kakao-login {
+        background-color: #fee500;
+        color: #3c1e1e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>소셜 로그인</h1>
+      <button
+        class="login-button naver-login"
+        onclick="location.href='/oauth2/authorization/naver'"
+      >
+        네이버로 로그인
+      </button>
+      <button
+        class="login-button kakao-login"
+        onclick="location.href='/oauth2/authorization/kakao'"
+      >
+        카카오로 로그인
+      </button>
+    </div>
+  </body>
+</html>

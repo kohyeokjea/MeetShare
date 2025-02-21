@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetshare.dao.TodoDAO">
+
+    <!-- 일정 정보 select -->
+    <select id="getTodoList" resultType="com.meetshare.dto.todo.TodoDTO">
+      SELECT * FROM TB_TODO WHERE CAL_NO = #{no} ORDER BY ORDR DESC;
+    </select>
+
+    <!-- 특정 일정 정보 select -->
+    <select id="getTodoByNo" parameterType="int" resultType="com.meetshare.dto.todo.TodoDTO">
+      SELECT * FROM TB_TODO WHERE NO = #{no};
+    </select>
+
+    <!-- 일정 insert -->
+    <insert id="insertTodo" parameterType="com.meetshare.dto.todo.TodoDTO">
+      INSERT INTO TB_TODO (CAL_NO, TITLE, WRITER, CONTENT, COLOR, SDATE, EDATE, REGIDATE, ORDR)
+      VALUES (#{calNo}, #{title}, #{writer}, #{content}, #{color}, #{sdate}, #{edate}, NOW(), 0);
+    </insert>
+
+    <!-- 일정 modify -->
+    <update id="updateTodo" parameterType="com.meetshare.dto.todo.TodoDTO">
+      UPDATE TB_TODO
+      SET TITLE = #{title}, CONTENT = #{content}, COLOR = #{color}, SDATE = #{sdate}, EDATE = #{edate}, MODIDATE = NOW()
+      WHERE NO = #{no};
+    </update>
+
+    <!-- 일정 delete -->
+    <delete id="deleteTodo" parameterType="int">
+      DELETE FROM TB_TODO WHERE NO = #{no};
+    </delete>
+
+    <!-- 상단 고정 일정 중 최대 ORDR 값 구하기 -->
+    <!--      
+    <select id="getMaxOrder" resultType="int">
+      SELECT MAX(ORDR) FROM TB_TODO WHERE IS_USE = 'Y'
+    </select>
+    -->
+    <!-- ORDR update -->
+    <update id="updateOrder" parameterType="int">
+      UPDATE TB_TODO
+      SET ORDR = #{order}
+      WHERE NO = #{no}
+    </update>
+
+    <!-- 이달의 일정 select -->
+    <select id="getMonthlyTodoList" resultType="com.meetshare.dto.todo.TodoDTO">
+      SELECT * FROM TB_TODO
+      WHERE SDATE BETWEEN #{startDate} AND #{endDate}
+      ORDER BY ORDR ASC;
+    </select>
+
+</mapper>

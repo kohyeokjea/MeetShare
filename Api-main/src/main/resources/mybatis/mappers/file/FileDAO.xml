@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetshare.dao.FileDAO">
+
+  <!-- 첨부파일정보 insert -->
+	<insert id="insertFile" parameterType="com.meetshare.dto.common.FileDTO" useGeneratedKeys="true" keyProperty="fileId">
+		INSERT INTO TB_FILE (FILE_NAME, FILE_PATH, CREATED_AT)
+		VALUES (#{fileName}, #{filePath}, NOW())
+	</insert>
+
+  <!-- 첨부파일정보 select -->
+	<select id="getFileById" parameterType="int" resultType="com.meetshare.dto.common.FileDTO">
+		SELECT FILE_ID, FILE_NAME, FILE_PATH, CREATED_AT
+		FROM TB_FILE
+		WHERE FILE_ID = #{fileId}
+	</select>
+
+  <!-- 첨부파일정보 update -->
+	<update id="updateFile" parameterType="com.meetshare.dto.common.FileDTO">
+		UPDATE TB_FILE
+		SET FILE_NAME = #{fileName}, FILE_PATH = #{filePath}, CREATED_AT = NOW()
+		WHERE FILE_ID = #{fileId}
+	</update>
+</mapper>

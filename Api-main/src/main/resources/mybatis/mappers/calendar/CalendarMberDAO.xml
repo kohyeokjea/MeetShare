@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meetshare.dao.CalendarMberDAO">
+
+  <resultMap id="calendarDTO" type="com.meetshare.dto.calendar.CalendarDTO">
+    <id property="no" column="NO" />
+    <result property="title" column="TITLE" />
+    <result property="content" column="CONTENT" />
+    <result property="writer" column="WRITER" />
+    <result property="passwd" column="PASSWD" />
+    <result property="fileId" column="FILE_ID" />
+    <result property="regidate" column="REGIDATE" />
+    <result property="modidate" column="MODIDATE" />
+    <result property="ordr" column="ORDR" />
+    <result property="isUse" column="IS_USE" />
+  </resultMap>
+
+  <resultMap id="calMberDTO" type="com.meetshare.dto.calendar.CalMberDTO">
+    <id property="no" column="NO" />
+    <result property="calNo" column="CAL_NO" />
+    <result property="nickName" column="NICKNAME" />
+    <result property="email" column="EMAIL" />
+    <result property="auth" column="AUTH" />
+    <result property="isOut" column="IS_OUT" />
+    <result property="outDate" column="OUTDATE" />
+  </resultMap>
+
+
+  <!-- 캘린더 멤버 정보 insert -->
+  <insert id="insertCalMberInfo" parameterType="com.meetshare.dto.calendar.CalMberDTO">
+		INSERT INTO TB_CALMBER (CAL_NO, NICKNAME, EMAIL, AUTH, REGIDATE)
+		VALUES (#{calNo}, #{nickName}, #{email}, #{auth}, NOW())
+  </insert>
+
+  <!-- 캘린더 멤버 정보 select -->
+  <select id="selectCalMberInfo" resultMap="calMberDTO" parameterType="com.meetshare.dto.calendar.CalMberDTO">
+    SELECT * FROM TB_CALMBER WHERE CAL_NO = #{no} AND EMAIL = #{email}
+  </select>
+
+  <!-- 캘린더 멤버 닉네임 update -->
+  <update id="updateCalMberNickname">
+		UPDATE TB_CALMBER 
+    SET NICKNAME = #{nickName} 
+    WHERE CAL_NO = #{no} AND EMAIL = #{email}
+  </update>
+
+  <!-- ********** 마이페이지 관련 ********** -->
+
+  <!-- 프로필 정보 select -->
+  <select id="selectCalMberInfoByEmail" resultMap="calMberDTO" parameterType="com.meetshare.dto.calendar.CalMberDTO">
+    SELECT 
+      a.NO AS no,
+      a.NICKNAME AS nickName,
+      a.EMAIL AS email,
+      a.AUTH AS auth,
+      a.IS_OUT AS isOut,
+      a.REGIDATE AS regidate,
+      a.OUTDATE AS outDate,
+      b.TITLE AS title
+    FROM 
+      TB_CALMBER a
+    JOIN 
+      TB_CALENDAR b ON a.CAL_NO = b.NO
+    WHERE 
+      a.EMAIL = #{email}
+    AND
+      b.IS_USE = 'Y'
+    ORDER BY a.CAL_NO DESC
+  </select>
+
+  <!-- 프로필 정보 modify -->
+  <update id="updateCalMberInfo" parameterType="com.meetshare.dto.calendar.CalMberDTO">
+		UPDATE TB_CALMBER
+		SET NICKNAME = #{nickName}, FILE_ID = #{fileId}
+		WHERE NO = #{no}
+  </update>
+
+  <!-- 파일 순번(고유 순번) select -->
+  <select id="getFileIdByCalMberNo" resultType="int">
+    SELECT FILE_ID FROM TB_CALMBER WHERE NO = #{no}
+  </select>
+  
+</mapper>
